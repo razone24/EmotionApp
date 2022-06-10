@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "128704884990",
+    "project_id": "face-detection-app-2c22d",
+    "storage_bucket": "face-detection-app-2c22d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128704884990:android:6a8b252ab6a05bac6bb5af",
+        "android_client_info": {
+          "package_name": "com.example.emotionapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "128704884990-be07h80glljokl0o6lq7b8nh8h7uhpge.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQOoZZZgGTbFl1ZTyrTQeLf5vYnH4CXVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "128704884990-be07h80glljokl0o6lq7b8nh8h7uhpge.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

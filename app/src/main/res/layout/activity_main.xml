@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.camerakit.CameraKitView
+        android:id="@+id/camera_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:keepScreenOn="true"
+        app:camera_flash="auto"
+        app:camera_facing="front"
+        app:camera_focus="continuous"
+        app:camera_permissions="camera"
+        android:layout_above="@+id/detect_face_btn"/>
+
+    <com.example.emotionapp.Helper.GraphicOverlay
+        android:id="@+id/graphic_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/detect_face_btn"/>
+    <TextView
+        android:id="@+id/prediction_text"
+        android:background="@color/design_default_color_primary_dark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textAlignment="center"
+        android:fontFamily="@string/common_google_play_services_install_button"
+        android:layout_above="@id/predict_emotion_btn"
+        />
+
+    <Button
+        android:id="@+id/predict_emotion_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/design_default_color_primary_dark"
+        android:textColor="@color/white"
+        android:layout_above="@+id/detect_face_btn"
+        android:text="Predict"/>
+
+    <Button
+        android:layout_alignParentBottom="true"
+        android:id="@+id/detect_face_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/design_default_color_primary_dark"
+        android:textColor="@color/white"
+        android:text="Detect Face" />
+
+</RelativeLayout>
