@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             long timeEnd = System.currentTimeMillis();
             System.out.println("Predict: " + (timeEnd - timeStart));
         } else {
-            byte[] grayImage = convertToGray(scaledImage);
+            byte[] grayImage = java_convertIMG2GreyArray(scaledImage);
             ByteBuffer imgData = ByteBuffer.allocateDirect(4 * imageSizeX * imageSizeY);
             imgData.order(ByteOrder.nativeOrder());
             imgData.rewind();
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-            labels = FileUtil.loadLabels(MainActivity.this, "labelsMobNet.txt");
+            labels = FileUtil.loadLabels(MainActivity.this, "labelsEmotion.txt");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -188,12 +188,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private MappedByteBuffer loadModelFile() throws IOException {
-        AssetFileDescriptor fileDescriptor = this.getAssets().openFd("mobnet_model.tflite");
+        AssetFileDescriptor fileDescriptor = this.getAssets().openFd("nl_cnn_model.tflite");
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel = inputStream.getChannel();
         long startOffset = fileDescriptor.getStartOffset();
         long declaredLength = fileDescriptor.getDeclaredLength();
         return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
+    }
+
+    private byte[] java_convertIMG2GreyArray(Bitmap img) {
+
+        byte[] theBytes = null;
+        /* Get the width and height of the bitmap*/
+        int width = img.getWidth();
+        int height = img.getHeight();
+        /* Get the pixels of the bitmap*/
+        int[] pixels = new int[width * height];
+        img.getPixels(pixels, 0, width, 0, 0, width, height);
+        /* define the result data array*/
+        theBytes = new byte[width * height/2];
+        /*define Variables used in the loop, saving memory and time*/
+        int x, y, k;
+        int pixel, r, g, b;
+        for (y = 0; y <height; y++) {
+            for (x = 0, k = 0; x <width; x++) {
+                //Get pixels in turn
+                pixel = pixels[y * width + x];
+                //Get rgb
+                r = (pixel >> 16) & 0xFF;
+                g = (pixel >> 8) & 0xFF;
+                b = pixel & 0xFF;
+                /*Save every two lines as one line*/
+                if (x% 2 == 1) {
+                    theBytes[k + y * width/2] = (byte ) (theBytes[k + y
+                            * width/2] | ((r * 299 + g * 587 + b * 114 + 500)/1000) & 0xf0);
+                    k++;
+                } else {
+                    theBytes[k + y * width/2 ] = (byte) (theBytes[k + y
+                            * width/2] | (((r * 299 + g * 587 + b * 114 + 500)/1000) >> 4) & 0x0f);
+                }
+            }
+        }
+        return theBytes ;
     }
 
     private void processFaceDetection(Bitmap bitmap) {
