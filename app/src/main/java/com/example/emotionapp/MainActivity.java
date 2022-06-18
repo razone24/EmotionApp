@@ -145,15 +145,15 @@ public class MainActivity extends AppCompatActivity {
         Bitmap scaledImage = Bitmap.createScaledBitmap(croppedImage, imageSizeX, imageSizeY, true);
 
         if(imageShape[imageShape.length - 1] == 3) {
-            inputImageBuffer.load(croppedImage);
+            inputImageBuffer.load(scaledImage);
 
-            ImageProcessor imageProcessor =
-                    new ImageProcessor.Builder()
-                            .add(new ResizeWithCropOrPadOp(imageSizeX, imageSizeY))
-                            .add(new ResizeOp(imageSizeX, imageSizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
-                            .add(new NormalizeOp(0.0f, 1.0f))
-                            .build();
-            inputImageBuffer = imageProcessor.process(inputImageBuffer);
+//            ImageProcessor imageProcessor =
+//                    new ImageProcessor.Builder()
+//                            .add(new ResizeWithCropOrPadOp(imageSizeX, imageSizeY))
+//                            .add(new ResizeOp(imageSizeX, imageSizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
+//                            .add(new NormalizeOp(0.0f, 1.0f))
+//                            .build();
+//            inputImageBuffer = imageProcessor.process(inputImageBuffer);
             long timeStart = System.currentTimeMillis();
             interpreter.run(inputImageBuffer.getBuffer(), outputProbabilityBuffer.getBuffer().rewind());
             long timeEnd = System.currentTimeMillis();
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-            labels = FileUtil.loadLabels(MainActivity.this, "labelsEmotion.txt");
+            labels = FileUtil.loadLabels(MainActivity.this, "labelsMobNet.txt");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private MappedByteBuffer loadModelFile() throws IOException {
-        AssetFileDescriptor fileDescriptor = this.getAssets().openFd("nl_cnn_model.tflite");
+        AssetFileDescriptor fileDescriptor = this.getAssets().openFd("mobnet_model.tflite");
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel = inputStream.getChannel();
         long startOffset = fileDescriptor.getStartOffset();
@@ -281,35 +281,10 @@ public class MainActivity extends AppCompatActivity {
         cameraKitView.onPause();
     }
 
-    private byte[] convertToGray(Bitmap bmp) {
-        int width = bmp.getWidth();
-        int height = bmp.getHeight();
-        byte[] grayscale = new byte[width * height];
-        int val, R, G, B;
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                val = bmp.getPixel(j, i);
-                R = (val >> 16) & 0xff;
-                G = (val >> 8) & 0xff;
-                B = val & 0xff;
-                grayscale[i * width + j] = (byte) (0.21 * R + 0.71 * G + 0.07 * B);
-            }
-        }
-
-        return grayscale;
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         cameraKitView.onResume();
-//        if (!OpenCVLoader.initDebug()) {
-//            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
-//            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, mLoaderCallback);
-//        } else {
-//            Log.d(TAG, "OpenCV library found inside package. Using it!");
-//            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
-//        }
     }
 
     @Override
